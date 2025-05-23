@@ -27,8 +27,8 @@ const Login: React.FC<LoginProps> = ({ setLogin }) => {
       router.replace("/");
     } catch (error: any) {
       // alert(error.response.data.message);
-      toast.error(error.response.data.message);
-      console.log(error);
+      toast.error(error?.response?.data?.message);
+      // console.log(error);
     }
   };
 

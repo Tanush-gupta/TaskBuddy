@@ -187,7 +187,7 @@ const UserManagementPanel: React.FC = () => {
             <p className="text-xs text-gray-500">Role: {user.role}</p>
             <div className="flex gap-2 mt-1">
               <Button
-                className="text-sm"
+                className="text-sm text-white"
                 onClick={() => {
                   setEditingUser(user);
                   setFormState({
