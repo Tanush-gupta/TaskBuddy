@@ -1,7 +1,6 @@
 import User from "../models/User.model.js";
 import Task from "../models/Task.model.js";
 import bcrypt from "bcryptjs";
-import { taskValidationSchema } from "./validator.js";
 
 // User Management
 export const getAllUsers = async (req, res) => {
