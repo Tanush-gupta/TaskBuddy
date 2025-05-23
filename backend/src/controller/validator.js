@@ -1,9 +1,19 @@
 import Joi from "joi";
 
 export const registerSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(8).max(32).required(),
-  role: Joi.string().valid("user", "admin").default("user"),
+  email: Joi.string().email().required().messages({
+    "string.email": `"Email" must be a valid email`,
+    "any.required": `"Email" is a required field`,
+  }),
+  password: Joi.string().min(8).max(32).required().messages({
+    "string.min": `"Password" should have a minimum length of {#limit}`,
+    "string.max": `"Password" should have a maximum length of {#limit}`,
+    "any.required": `"Password" is a required field`,
+  }),
+  role: Joi.string().valid("user", "admin").default("user").messages({
+    "string.base": `"Role" should be a type of 'text'`,
+    "any.only": `"Role" must be one of: user, admin`,
+  }),
 });
 
 export const loginSchema = Joi.object({

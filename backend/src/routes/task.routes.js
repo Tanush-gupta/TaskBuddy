@@ -18,7 +18,7 @@ router
   .get(getAllTasks);
 router
   .route("/:taskId")
-  .patch(upload.array("taskFile", 3), updateTask)
+  .put(upload.array("taskFile", 3), updateTask)
   .delete(deleteTask);
 
 export default router;

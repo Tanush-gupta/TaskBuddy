@@ -3,6 +3,7 @@ import axios from "axios";
 import { baseURL } from "@/constants/constants";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import { error } from "console";
 interface User {
   _id: string;
   email: string;
@@ -141,13 +142,14 @@ const UserManagementPanel: React.FC = () => {
 
   const handleAdd = async () => {
     try {
-      await axios.post(`${baseURL}/admin/users`, formState);
+      await axios.post(`${baseURL}/user/register`, formState);
       toast.success("User added successfully");
       setAddingUser(false);
       setFormState({ email: "", password: "", role: "user" });
       fetchUsers();
-    } catch {
-      toast.error("Error adding user");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 

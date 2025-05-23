@@ -2,8 +2,9 @@ import React from "react";
 import { Task } from "@/types/task.type";
 import { Trash2, Edit2 } from "lucide-react";
 import axios from "axios";
-import { baseURL } from "@/constants/constants";
+import { baseURL, backendURL } from "@/constants/constants";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface TaskCardProps {
   task: Task;
@@ -85,13 +86,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, setTrigger, onEdit }) => {
           <ul className="list-disc ml-5 space-y-1">
             {task.documents.map((doc) => (
               <li key={doc._id}>
-                <a
-                  href={doc.fileUrl}
+                <Link
+                  href={`${backendURL}/${doc.fileUrl}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline text-blue-400">
                   {doc.fileName}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

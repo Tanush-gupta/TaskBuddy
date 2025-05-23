@@ -118,11 +118,11 @@ export const deleteTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const { taskId } = req.params;
+    const task = await Task.findById(taskId);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
-
     const user = req.user;
     const isAdmin = user.role === "admin";
     const isOwner = task.createdBy.toString() === user._id.toString();
@@ -149,8 +149,9 @@ export const updateTask = async (req, res) => {
       }
     }
 
-    const updatedTask = await task.save();
-    await updatedTask
+    const savedTask = await task.save();
+
+    const updatedTask = await Task.findById(savedTask._id)
       .populate("assignedTo", "username email")
       .populate("createdBy", "username email");
 

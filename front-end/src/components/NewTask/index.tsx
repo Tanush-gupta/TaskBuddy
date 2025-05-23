@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { X, Trash2 } from "lucide-react";
 import axios from "axios";
-import { baseURL } from "@/constants/constants";
+import { baseURL, backendURL } from "@/constants/constants";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface NewTaskProps {
   setShowNewTask: React.Dispatch<React.SetStateAction<boolean>>;
@@ -63,7 +64,7 @@ const NewTask: React.FC<NewTaskProps> = ({
         priority: taskToEdit.priority,
         assignedTo: taskToEdit.assignedTo,
       });
-      setExistingFiles(taskToEdit.files || []);
+      setExistingFiles(taskToEdit.documents || []);
     }
   }, [taskToEdit]);
 
@@ -103,16 +104,17 @@ const NewTask: React.FC<NewTaskProps> = ({
   };
 
   const handleExistingFileDelete = async (fileId: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`${baseURL}/task/delete-file/${fileId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success("File deleted successfully");
-      setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to delete file");
-    }
+    // try {
+    //   const token = localStorage.getItem("token");
+    //   await axios.delete(`${baseURL}/task/delete-file/${fileId}`, {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   });
+    //   toast.success("File deleted successfully");
+    //   setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
+    // } catch (error: any) {
+    //   toast.error(error?.response?.data?.message || "Failed to delete file");
+    // }
+    setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
   };
 
   const handleSubmit = async () => {
@@ -154,6 +156,8 @@ const NewTask: React.FC<NewTaskProps> = ({
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Something went wrong");
       console.log("Error:", error);
+    } finally {
+      handleClose();
     }
   };
   const handleClose = () => {
@@ -285,13 +289,13 @@ const NewTask: React.FC<NewTaskProps> = ({
                 <li
                   key={file._id}
                   className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-                  <a
-                    href={file.url}
+                  <Link
+                    href={`${backendURL}/${file.fileUrl}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-700 hover:underline text-sm truncate max-w-[80%]">
-                    {file.name}
-                  </a>
+                    {file.fileName}
+                  </Link>
                   <button
                     onClick={() => handleExistingFileDelete(file._id)}
                     className="text-red-500 hover:text-red-700"
