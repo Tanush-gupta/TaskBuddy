@@ -9,12 +9,14 @@ interface NewTaskProps {
   setShowNewTask: React.Dispatch<React.SetStateAction<boolean>>;
   taskToEdit?: any;
   setEditTask?: React.Dispatch<React.SetStateAction<any>>;
+  setTriggerApiCall?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const NewTask: React.FC<NewTaskProps> = ({
   setShowNewTask,
   taskToEdit,
   setEditTask,
+  setTriggerApiCall,
 }) => {
   const [task, setTask] = useState({
     title: "",
@@ -157,6 +159,9 @@ const NewTask: React.FC<NewTaskProps> = ({
       toast.error(error?.response?.data?.message || "Something went wrong");
       console.log("Error:", error);
     } finally {
+      if (setTriggerApiCall) {
+        setTriggerApiCall((prev) => !prev);
+      }
       handleClose();
     }
   };
