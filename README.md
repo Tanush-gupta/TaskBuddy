@@ -1,3 +1,26 @@
+# Getting Started with Docker
+To run this application using Docker:
+
+## 1. Switch to the docker branch
+git checkout docker
+
+## 2. Build and start the application using Docker Compose
+docker-compose up --build
+
+## 3. App URLs:
+### Backend API: http://localhost:5050/api/v1
+### Frontend (if connected): http://localhost:3000
+
+## 4.Admin User Auto-Creation 
+
+  email : admin@gmail.com
+  
+  password : admin@gmail.com
+
+## 5. To reflect code changes, always rebuild the containers:
+docker-compose up --build
+
+
 # API Documentation
 
 ## Overview
