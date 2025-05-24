@@ -8,6 +8,7 @@ export const createTask = async (req, res) => {
     const { error } = taskValidationSchema.validate(req.body);
 
     if (error) {
+      console.error("Validation error:");
       return res.status(400).json({ message: error.details[0].message });
     }
 
