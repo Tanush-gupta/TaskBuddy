@@ -4,10 +4,12 @@ import dotenv from "dotenv";
 import { createAdminUser } from "./src/utils/createadmin.js";
 dotenv.config();
 
+const PORT = 5050;
+
 connectDB()
   .then(async () => {
-    app.listen(process.env.PORT || 8000, () => {
-      console.log("Server is running at:", process.env.PORT || 8000);
+    app.listen(PORT || 8000, () => {
+      console.log("Server is running at:", PORT || 8000);
     });
     await createAdminUser();
   })

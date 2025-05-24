@@ -3,6 +3,8 @@ import User from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 import { registerSchema, loginSchema } from "./validator.js";
 
+const JWT_SECRET =
+  "c8f95a9c5b1b4b9f7a7d5d9d6f9e1e7b4c3a5e2d7a8f4b6d3c1e9f2b5a4c8d7";
 export const register = async (req, res) => {
   try {
     const { error } = registerSchema.validate(req.body);
@@ -18,14 +20,14 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = new User({ 
-      email, 
+    const user = new User({
+      email,
       password: hashedPassword,
-      role: "user"
+      role: "user",
     });
     await user.save();
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
@@ -35,14 +37,14 @@ export const register = async (req, res) => {
       sameSite: "strict",
     });
 
-    res.status(201).json({ 
-      message: "User registered successfully", 
+    res.status(201).json({
+      message: "User registered successfully",
       user: {
         _id: user._id,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
-      token 
+      token,
     });
   } catch (error) {
     console.error("Registration Error:", error);
@@ -67,7 +69,7 @@ export const login = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
@@ -101,7 +103,7 @@ export const getUser = async (req, res) => {
         .json({ message: "Unauthorized: No token provided" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {

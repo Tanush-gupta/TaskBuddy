@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 
+const JWT_SECRET =
+  "c8f95a9c5b1b4b9f7a7d5d9d6f9e1e7b4c3a5e2d7a8f4b6d3c1e9f2b5a4c8d7";
+
 export const protect = async (req, res, next) => {
   try {
     const token =
@@ -12,7 +15,7 @@ export const protect = async (req, res, next) => {
         .json({ message: "Unauthorized: No token provided" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
