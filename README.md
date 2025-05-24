@@ -1,3 +1,31 @@
+# Getting Started with Docker
+
+To run this application using Docker:
+
+## 1. Switch to the docker branch
+
+git checkout docker
+
+## 2. Build and start the application using Docker Compose
+
+docker-compose up --build
+
+## 3. App URLs:
+
+### Backend API: http://localhost:5050/api/v1
+
+### Frontend (if connected): http://localhost:3000
+
+## 4.Admin User Auto-Creation
+
+email : admin@gmail.com
+
+password : admin@gmail.com
+
+## 5. To reflect code changes, always rebuild the containers:
+
+docker-compose up --build
+
 # API Documentation
 
 ## Overview
@@ -16,8 +44,8 @@ This API allows for managing users and tasks with role-based access control usin
 
 ## Authentication Middleware
 
-* `protect`: Ensures the user is authenticated.
-* `isAdmin`: Verifies the user has admin privileges.
+- `protect`: Ensures the user is authenticated.
+- `isAdmin`: Verifies the user has admin privileges.
 
 ---
 
@@ -43,15 +71,15 @@ Retrieve all users except the currently logged-in admin.
 
 **Query Parameters:**
 
-* `page` (default: 1)
-* `limit` (default: 10)
-* `sort` (default: "createdAt")
-* `order` (default: "desc")
+- `page` (default: 1)
+- `limit` (default: 10)
+- `sort` (default: "createdAt")
+- `order` (default: "desc")
 
 **Response:**
 
-* List of users (excluding passwords)
-* Pagination metadata
+- List of users (excluding passwords)
+- Pagination metadata
 
 #### POST `/admin/users`
 
@@ -59,13 +87,13 @@ Create a new user.
 
 **Body Parameters:**
 
-* `email` (required)
-* `password` (required)
-* `role` (optional; default: "user")
+- `email` (required)
+- `password` (required)
+- `role` (optional; default: "user")
 
 **Response:**
 
-* Created user info (without password)
+- Created user info (without password)
 
 #### PUT `/admin/users/:id`
 
@@ -73,13 +101,13 @@ Update an existing user.
 
 **Body Parameters:**
 
-* `email` (optional)
-* `password` (optional)
-* `role` (optional)
+- `email` (optional)
+- `password` (optional)
+- `role` (optional)
 
 **Response:**
 
-* Updated user info (without password)
+- Updated user info (without password)
 
 #### DELETE `/admin/users/:id`
 
@@ -87,7 +115,7 @@ Delete a user and their assigned tasks.
 
 **Response:**
 
-* Success message
+- Success message
 
 ---
 
@@ -179,10 +207,10 @@ Update the authenticated user’s profile. (Requires `protect`)
 
 ## File Upload Middleware
 
-* Configured using `multer`
-* Files are saved under `public/uploads/`
-* File types allowed: jpeg, jpg, png, gif, pdf, doc, docx
-* Max file size: 5MB
+- Configured using `multer`
+- Files are saved under `public/uploads/`
+- File types allowed: jpeg, jpg, png, gif, pdf, doc, docx
+- Max file size: 5MB
 
 ---
 
