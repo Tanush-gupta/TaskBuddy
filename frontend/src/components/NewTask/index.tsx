@@ -258,22 +258,24 @@ const NewTask: React.FC<NewTaskProps> = ({
         </div>
 
         {/* Assigned To */}
-        <div className="flex flex-col gap-1">
-          <label className="font-medium text-gray-700">Assigned To</label>
-          <select
-            name="assignedTo"
-            value={task.assignedTo}
-            onChange={handleChange}
-            className="p-2 border border-gray-300 rounded-md text-gray-900"
-            disabled={!isAdmin}>
-            <option value="">Select a user</option>
-            {users.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.email}
-              </option>
-            ))}
-          </select>
-        </div>
+
+        {isAdmin && (
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-gray-700">Assigned To</label>
+            <select
+              name="assignedTo"
+              value={task.assignedTo}
+              onChange={handleChange}
+              className="p-2 border border-gray-300 rounded-md text-gray-900">
+              <option value="">Select a user</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.email}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* File Upload */}
         <div className="flex flex-col gap-1">

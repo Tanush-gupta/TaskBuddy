@@ -4,7 +4,7 @@ import axios from "axios";
 import DashBoard from "@/components/dashBoard";
 import { baseURL } from "../constants/constants.js";
 import Loader from "@/components/Loader";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation.js";
 export default function Home() {
   const router = useRouter();
   const [user, setUser] = React.useState(null);
