@@ -106,16 +106,6 @@ const NewTask: React.FC<NewTaskProps> = ({
   };
 
   const handleExistingFileDelete = async (fileId: string) => {
-    // try {
-    //   const token = localStorage.getItem("token");
-    //   await axios.delete(`${baseURL}/task/delete-file/${fileId}`, {
-    //     headers: { Authorization: `Bearer ${token}` },
-    //   });
-    //   toast.success("File deleted successfully");
-    //   setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
-    // } catch (error: any) {
-    //   toast.error(error?.response?.data?.message || "Failed to delete file");
-    // }
     setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
   };
 
