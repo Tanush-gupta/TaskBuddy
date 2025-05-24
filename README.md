@@ -114,7 +114,7 @@ Delete a user and their assigned tasks.
 
 ---
 
-### Task Management (Commented Out but Defined)
+### Task Management 
 
 These routes exist in the code but are currently commented out. They follow the same structure:
 
