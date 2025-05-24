@@ -295,7 +295,7 @@ const NewTask: React.FC<NewTaskProps> = ({
                   key={file._id}
                   className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
                   <Link
-                    href={`${backendURL}/${file.fileUrl}`}
+                    href={file.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-700 hover:underline text-sm truncate max-w-[80%]">
