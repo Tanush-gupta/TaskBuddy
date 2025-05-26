@@ -106,16 +106,6 @@ const NewTask: React.FC<NewTaskProps> = ({
   };
 
   const handleExistingFileDelete = async (fileId: string) => {
-    // try {
-    //   const token = localStorage.getItem("token");
-    //   await axios.delete(`${baseURL}/task/delete-file/${fileId}`, {
-    //     headers: { Authorization: `Bearer ${token}` },
-    //   });
-    //   toast.success("File deleted successfully");
-    //   setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
-    // } catch (error: any) {
-    //   toast.error(error?.response?.data?.message || "Failed to delete file");
-    // }
     setExistingFiles((prev) => prev.filter((f) => f._id !== fileId));
   };
 
@@ -256,9 +246,7 @@ const NewTask: React.FC<NewTaskProps> = ({
             <option value="completed">Completed</option>
           </select>
         </div>
-
         {/* Assigned To */}
-
         {isAdmin && (
           <div className="flex flex-col gap-1">
             <label className="font-medium text-gray-700">Assigned To</label>
@@ -297,7 +285,7 @@ const NewTask: React.FC<NewTaskProps> = ({
                   key={file._id}
                   className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
                   <Link
-                    href={`${backendURL}/${file.fileUrl}`}
+                    href={file.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-700 hover:underline text-sm truncate max-w-[80%]">

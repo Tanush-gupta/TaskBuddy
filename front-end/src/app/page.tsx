@@ -1,37 +1,20 @@
 "use client";
 import React, { useEffect } from "react";
-import axios from "axios";
 import DashBoard from "@/components/dashBoard";
-import { baseURL } from "../constants/constants.js";
 import Loader from "@/components/Loader";
-import { useRouter } from "next/navigation.js";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/components/UserContext";
+
 export default function Home() {
   const router = useRouter();
-  const [user, setUser] = React.useState(null);
+  const { user, loading } = useUser();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!loading && user === null) {
       router.replace("/auth");
     }
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/user/getUser`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.data) {
-          setUser(response.data);
-          console.log("User is authenticated");
-        }
-      } catch (error) {
-        router.replace("/auth");
-        console.log("error", error);
-      }
-    };
-    fetchUser();
-  }, []);
+  }, [user, loading, router]);
 
+  if (loading) return <Loader />;
   return <>{user ? <DashBoard user={user} /> : <Loader />}</>;
 }

@@ -1,55 +1,57 @@
 import User from "../models/User.model.js";
 import Task from "../models/Task.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { taskValidationSchema } from "./validator.js";
+import fs from "fs";
 
 export const createTask = async (req, res) => {
   try {
-    // Validate request body
     const { error } = taskValidationSchema.validate(req.body);
-
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
 
     const { title, description, status, priority, dueDate } = req.body;
-
-    // Determine who the task is assigned to
     let assignedTo;
+
     if (req.user.role === "admin") {
       assignedTo = req.body.assignedTo;
+      k;
       if (!assignedTo) {
         return res
           .status(400)
           .json({ message: "Assigned user is required for admin" });
       }
     } else {
-      assignedTo = req.user._id; // normal users can only assign to themselves
+      assignedTo = req.user._id;
     }
 
-    // Verify that assigned user exists
     const assignedUser = await User.findById(assignedTo);
     if (!assignedUser) {
       return res.status(404).json({ message: "Assigned user not found" });
     }
 
-    // Handle file uploads (max 3 documents)
     const documents = [];
+
+    console.log("Files received:", req.files);
     if (req.files && req.files.length > 0) {
       if (req.files.length > 3) {
         return res
           .status(400)
           .json({ message: "You can upload a maximum of 3 documents." });
       }
+
       for (const file of req.files) {
+        const cloudResult = await uploadOnCloudinary(file.path);
+        // fs.unlinkSync(file.path); // remove temp file
         documents.push({
           fileName: file.originalname,
-          fileUrl: `/uploads/${file.filename}`,
+          fileUrl: cloudResult.url,
           uploadDate: new Date(),
         });
       }
     }
 
-    // Create the task
     const task = await Task.create({
       title,
       description,
@@ -90,7 +92,6 @@ export const deleteTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    // Allow admins to delete any task OR users to delete their own created tasks
     const isAdmin = user.role === "admin";
     const isOwner = task.createdBy.toString() === user._id.toString();
 
@@ -100,7 +101,6 @@ export const deleteTask = async (req, res) => {
         .json({ message: "You are not authorized to delete this task" });
     }
 
-    // Remove task reference from assigned user's task array
     await User.findByIdAndUpdate(task.assignedTo, {
       $pull: { tasks: task._id },
     });
@@ -123,6 +123,7 @@ export const updateTask = async (req, res) => {
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
+
     const user = req.user;
     const isAdmin = user.role === "admin";
     const isOwner = task.createdBy.toString() === user._id.toString();
@@ -138,19 +139,19 @@ export const updateTask = async (req, res) => {
       task[key] = updates[key];
     });
 
-    // Optional: handle file updates (append to existing documents)
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
+        const cloudResult = await uploadOnCloudinary(file.path);
+        fs.unlinkSync(file.path); // clean up
         task.documents.push({
           fileName: file.originalname,
-          fileUrl: `/uploads/${file.filename}`,
+          fileUrl: cloudResult.url,
           uploadDate: new Date(),
         });
       }
     }
 
     const savedTask = await task.save();
-
     const updatedTask = await Task.findById(savedTask._id)
       .populate("assignedTo", "username email")
       .populate("createdBy", "username email");
@@ -176,12 +177,10 @@ export const getAllTasks = async (req, res) => {
     const user = req.user;
     const query = {};
 
-    // Apply filtering based on role
     if (user.role !== "admin") {
       query.$or = [{ createdBy: user._id }, { assignedTo: user._id }];
     }
 
-    // Apply additional filters
     if (status) query.status = status;
     if (priority) query.priority = priority;
 

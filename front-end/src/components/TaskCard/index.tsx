@@ -87,7 +87,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, setTrigger, onEdit }) => {
             {task.documents.map((doc) => (
               <li key={doc._id}>
                 <Link
-                  href={`${backendURL}/${doc.fileUrl}`}
+                  href={doc.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline text-blue-400">
