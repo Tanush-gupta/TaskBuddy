@@ -3,7 +3,79 @@ import Task from "../models/Task.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { taskValidationSchema } from "./validator.js";
 import fs from "fs";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../utils/fireabaseConfig.js";
+// export const createTask = async (req, res) => {
+//   try {
+//     const { error } = taskValidationSchema.validate(req.body);
+//     if (error) {
+//       return res.status(400).json({ message: error.details[0].message });
+//     }
+//     const { title, description, status, priority, dueDate } = req.body;
+//     let assignedTo;
 
+//     if (req.user.role === "admin") {
+//       assignedTo = req.body.assignedTo;
+//       if (!assignedTo) {
+//         return res
+//           .status(400)
+//           .json({ message: "Assigned user is required for admin" });
+//       }
+//     } else {
+//       assignedTo = req.user._id;
+//     }
+
+//     const assignedUser = await User.findById(assignedTo);
+//     if (!assignedUser) {
+//       return res.status(404).json({ message: "Assigned user not found" });
+//     }
+
+//     const documents = [];
+
+//     console.log("Files received:", req.files);
+//     if (req.files && req.files.length > 0) {
+//       if (req.files.length > 3) {
+//         return res
+//           .status(400)
+//           .json({ message: "You can upload a maximum of 3 documents." });
+//       }
+
+//       for (const file of req.files) {
+//         const cloudResult = await uploadOnCloudinary(file.path);
+//         // fs.unlinkSync(file.path); // remove temp file
+//         documents.push({
+//           fileName: file.originalname,
+//           fileUrl: cloudResult.url,
+//           uploadDate: new Date(),
+//         });
+//       }
+//     }
+
+//     const task = await Task.create({
+//       title,
+//       description,
+//       status,
+//       priority,
+//       dueDate,
+//       assignedTo,
+//       createdBy: req.user._id,
+//       documents,
+//     });
+
+//     await task.populate("assignedTo", "email");
+//     await task.populate("createdBy", "email");
+
+//     res.status(201).json({
+//       message: "Task created successfully",
+//       task,
+//     });
+//   } catch (error) {
+//     console.error("Error creating task:", error);
+//     res
+//       .status(500)
+//       .json({ message: "Failed to create task", error: error.message });
+//   }
+// };
 export const createTask = async (req, res) => {
   try {
     const { error } = taskValidationSchema.validate(req.body);
@@ -40,11 +112,21 @@ export const createTask = async (req, res) => {
       }
 
       for (const file of req.files) {
-        const cloudResult = await uploadOnCloudinary(file.path);
-        // fs.unlinkSync(file.path); // remove temp file
+        // Create a Firebase Storage reference
+        const storageRef = ref(
+          storage,
+          `tasks/${Date.now()}_${file.originalname}`
+        );
+
+        // Upload file buffer to Firebase Storage
+        await uploadBytes(storageRef, file.buffer);
+
+        // Get the downloadable URL
+        const fileUrl = await getDownloadURL(storageRef);
+
         documents.push({
           fileName: file.originalname,
-          fileUrl: cloudResult.url,
+          fileUrl,
           uploadDate: new Date(),
         });
       }
@@ -75,7 +157,6 @@ export const createTask = async (req, res) => {
       .json({ message: "Failed to create task", error: error.message });
   }
 };
-
 export const deleteTask = async (req, res) => {
   try {
     const { taskId } = req.params;
