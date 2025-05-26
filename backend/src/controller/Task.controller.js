@@ -1,6 +1,6 @@
 import User from "../models/User.model.js";
 import Task from "../models/Task.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+// import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { taskValidationSchema } from "./validator.js";
 import fs from "fs";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
