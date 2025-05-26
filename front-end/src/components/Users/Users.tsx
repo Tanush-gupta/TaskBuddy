@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogContent,
 } from "@/utils/common";
+import { useUser } from "@/components/UserContext";
 
 interface User {
   _id: string;
