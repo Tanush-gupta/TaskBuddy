@@ -10,13 +10,11 @@ export const createTask = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-
     const { title, description, status, priority, dueDate } = req.body;
     let assignedTo;
 
     if (req.user.role === "admin") {
       assignedTo = req.body.assignedTo;
-      k;
       if (!assignedTo) {
         return res
           .status(400)
