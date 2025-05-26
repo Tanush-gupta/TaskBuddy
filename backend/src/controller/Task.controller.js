@@ -213,18 +213,25 @@ export const updateTask = async (req, res) => {
         .json({ message: "You are not authorized to update this task" });
     }
 
+    // Update task fields from req.body
     const updates = req.body;
     Object.keys(updates).forEach((key) => {
       task[key] = updates[key];
     });
 
+    // Upload new files to Firebase Storage if present
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const cloudResult = await uploadOnCloudinary(file.path);
-        fs.unlinkSync(file.path); // clean up
+        const storageRef = ref(
+          storage,
+          `documents/${Date.now()}_${file.originalname}`
+        );
+        await uploadBytes(storageRef, file.buffer);
+        const fileUrl = await getDownloadURL(storageRef);
+
         task.documents.push({
           fileName: file.originalname,
-          fileUrl: cloudResult.url,
+          fileUrl,
           uploadDate: new Date(),
         });
       }
